@@ -1,26 +1,24 @@
 class Voxel < Formula
-  desc "High performance, lightweight version control system and local file engine"
+  desc "Decentralized P2P Version Control System"
   homepage "https://github.com/Naman1177/Voxel"
-  url "https://github.com/Naman1177/Voxel/archive/refs/tags/v1.0.0-alpha.tar.gz"
-  sha256 "90833ef59815f0f9f6a3708020fe56ca22f19775350507d0d01841c7a3537733"
+  url "https://github.com/Naman1177/Voxel/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 4f6058e9b8febc77039de5c2033ba958197ea063444cc77f613d6ac664f96fb1
   license "MIT"
 
-  # Tells Homebrew that CMake is required to compile your C++ project
-  depends_on "cmake" => :build
+  # If you are using standard macOS frameworks, you don't need many dependencies.
+  # But if you rely on an external Zstd library, uncomment the line below:
+  # depends_on "zstd"
 
   def install
-    # Configures the project using the CMakeLists.txt you built
-    system "cmake", "-S", ".", "-B", "build", *std_cmake_args
+    # This executes your clang++ build command exactly as you run it in the terminal
+    system "clang++", "-std=c++17", "-I", "inc", "-I", "third_party_lib", *Dir["src/*.cpp"], "-o", "voxel"
     
-    # Compiles the binary
-    system "cmake", "--build", "build"
-    
-    # Installs the binary into Homebrew's global environment path
-    system "cmake", "--install", "build"
+    # This moves the compiled binary into the global Homebrew path so the user can type 'voxel' anywhere
+    bin.install "voxel"
   end
 
   test do
-    # Verifies the global binary runs successfully
-    system "#{bin}/voxel", "--version"
+    # A quick test to ensure the binary installed correctly
+    system "#{bin}/voxel", "--help"
   end
 end
